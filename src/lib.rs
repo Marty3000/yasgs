@@ -1,15 +1,21 @@
+//! yass (yet another sodoku solver)
+//!
+//! this lib will solve sudokus, but it will not only work on "standard" 9x9 sudokus,\
+//! but also on a 4x4, 16x16, 25x25, 36x36 and 49x49 sudoku.
 #![forbid(unsafe_code)]
 
 mod sudoku;
 
 const ABC: &'static str = ".123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ";
 
-
+/// check the input
+/// 
+/// returns to get the size and teh initial state of the sudoku
 fn init(inp: &str) -> (usize, String) {
     let mut sudo: String;
     for i in [7, 6, 5, 4, 3, 2] {
         let abc: Vec<char> = ABC[..((i * i) + 1)].chars().collect();
-        println!("  abc: {:?}", abc);
+        //println!("  abc: {:?}", abc);
         sudo = String::new();
         for mut c in inp.chars() {
             if c == '0' {c = '.'}
@@ -24,6 +30,9 @@ fn init(inp: &str) -> (usize, String) {
     (0, String::from(""))
 }
 
+/// format the solutions
+/// 
+/// based on the initial input
 fn format_result(size: usize, inp: &str, sol_vec: Vec<String>) -> Vec<String> {
     let abc: Vec<char> = ABC[..((size * size) + 1)].chars().collect();
     let mut res: Vec<String> = Vec::new();
@@ -46,6 +55,11 @@ fn format_result(size: usize, inp: &str, sol_vec: Vec<String>) -> Vec<String> {
     res
 }
 
+/// solve a sudoku
+/// 
+/// input:\
+/// - description of the sudoku
+/// - number of solutions to return
 pub fn solve(inp: &str, cnt: usize) -> Vec<String> {
     let (size, sudo) = init(inp);
     if size == 0 {
@@ -62,18 +76,37 @@ mod tests {
 
     #[test]
     fn test_4x4() {
-        assert_eq!(
+        assert_eq!(solve("1234341.........", 2),
             vec![String::from("1234341221434321"),
-            String::from("1234341223414123")], solve("1234341.........", 2));
-        assert_eq!(
+            String::from("1234341223414123")]);
+        assert_eq!(solve("1234341000000000", 2),
             vec![String::from("1234341221434321"),
-            String::from("1234341223414123")], solve("1234341000000000", 2));
+            String::from("1234341223414123")]);
 
     }
 
     #[test]
     fn test_9x9_format() {
-        assert_eq!(
+        assert_eq!(solve("
+  ╔═══════════╦═══════════╦═══════════╗
+  ║ 1 │ 4 │ . ║ . │ 7 │ . ║ . │ 6 │ 5 ║
+  ║───┼───┼───║───┼───┼───║───┼───┼───║
+  ║ 5 │ . │ . ║ . │ 4 │ . ║ . │ . │ 1 ║
+  ║───┼───┼───║───┼───┼───║───┼───┼───║
+  ║ 9 │ . │ . ║ . │ . │ . ║ . │ . │ 7 ║
+  ╠═══════════╬═══════════╬═══════════╣
+  ║ 4 │ 2 │ 9 ║ . │ . │ . ║ 5 │ 1 │ 8 ║
+  ║───┼───┼───║───┼───┼───║───┼───┼───║
+  ║ . │ . │ 5 ║ 2 │ . │ 8 ║ 4 │ . │ . ║
+  ║───┼───┼───║───┼───┼───║───┼───┼───║
+  ║ 8 │ 7 │ 1 ║ . │ . │ . ║ 3 │ 2 │ 6 ║
+  ╠═══════════╬═══════════╬═══════════╣
+  ║ 2 │ . │ . ║ . │ . │ . ║ . │ . │ 4 ║
+  ║───┼───┼───║───┼───┼───║───┼───┼───║
+  ║ 7 │ . │ . ║ . │ 6 │ . ║ . │ . │ 3 ║
+  ║───┼───┼───║───┼───┼───║───┼───┼───║
+  ║ 3 │ 1 │ . ║ . │ 8 │ . ║ . │ 9 │ 2 ║
+  ╚═══════════╩═══════════╩═══════════╝", 3),
             vec![String::from("
   ╔═══════════╦═══════════╦═══════════╗
   ║ 1 │ 4 │ 2 ║ 8 │ 7 │ 3 ║ 9 │ 6 │ 5 ║
@@ -93,34 +126,20 @@ mod tests {
   ║ 7 │ 9 │ 8 ║ 4 │ 6 │ 2 ║ 1 │ 5 │ 3 ║
   ║───┼───┼───║───┼───┼───║───┼───┼───║
   ║ 3 │ 1 │ 4 ║ 5 │ 8 │ 7 ║ 6 │ 9 │ 2 ║
-  ╚═══════════╩═══════════╩═══════════╝")], solve("
-  ╔═══════════╦═══════════╦═══════════╗
-  ║ 1 │ 4 │ . ║ . │ 7 │ . ║ . │ 6 │ 5 ║
-  ║───┼───┼───║───┼───┼───║───┼───┼───║
-  ║ 5 │ . │ . ║ . │ 4 │ . ║ . │ . │ 1 ║
-  ║───┼───┼───║───┼───┼───║───┼───┼───║
-  ║ 9 │ . │ . ║ . │ . │ . ║ . │ . │ 7 ║
-  ╠═══════════╬═══════════╬═══════════╣
-  ║ 4 │ 2 │ 9 ║ . │ . │ . ║ 5 │ 1 │ 8 ║
-  ║───┼───┼───║───┼───┼───║───┼───┼───║
-  ║ . │ . │ 5 ║ 2 │ . │ 8 ║ 4 │ . │ . ║
-  ║───┼───┼───║───┼───┼───║───┼───┼───║
-  ║ 8 │ 7 │ 1 ║ . │ . │ . ║ 3 │ 2 │ 6 ║
-  ╠═══════════╬═══════════╬═══════════╣
-  ║ 2 │ . │ . ║ . │ . │ . ║ . │ . │ 4 ║
-  ║───┼───┼───║───┼───┼───║───┼───┼───║
-  ║ 7 │ . │ . ║ . │ 6 │ . ║ . │ . │ 3 ║
-  ║───┼───┼───║───┼───┼───║───┼───┼───║
-  ║ 3 │ 1 │ . ║ . │ 8 │ . ║ . │ 9 │ 2 ║
-  ╚═══════════╩═══════════╩═══════════╝", 3));
+  ╚═══════════╩═══════════╩═══════════╝")]);
     }
 
 
     #[test]
     fn test_error() {
-        assert_eq!(vec![String::from("Invalid input.")], solve("1234341....5....", 1));
-        assert_eq!(vec![String::from("Invalid input.")], solve("1234341..........", 1));
-        assert_eq!(vec![String::from("Invalid input.")], solve("1234341........", 1));
+        // 5 not allowed as stone for a 4x4-board => input only 15 chars length
+        assert_eq!(solve("1234341....5....", 1),  vec![String::from("Invalid input.")]);
+
+        // input 17 chars length => does not fit into a 4x4-board
+        assert_eq!(solve("1234341..........", 1), vec![String::from("Invalid input.")]);
+        
+        // input 15 chars length => does not fit into a 4x4-board
+        assert_eq!(solve("1234341........", 1),   vec![String::from("Invalid input.")]);
     }
 
 }

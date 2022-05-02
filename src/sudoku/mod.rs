@@ -1,7 +1,13 @@
+//! sudoku mod
+//! 
+//! defines a sudoku-board (struct)\
+//! and some methods, functions to calculate the solutions
 #![forbid(unsafe_code)]
 
+/// the alphabete used for the "stones"
 const ABC: &'static str = ".123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ";
 
+/// the sudoku board
 pub struct Board {
     size: usize,
     qsize: usize,
@@ -9,8 +15,10 @@ pub struct Board {
     possible: Vec<Vec<Vec<u8>>>,
 }
 
+/// methods used for solving the suduko
 impl Board {
 
+    /// create a new board ( size and initial state must be provided)
     pub fn new(qsize: usize, inp: &str) -> Board {
         let size = qsize * qsize;
         let abc: Vec<char> = ABC.chars().collect();
@@ -37,6 +45,7 @@ impl Board {
         me
     }
 
+    /// create a vector of solutions for the current sudoku-board
     pub fn solve(&mut self, num: usize) -> Vec<String> {
         let mut sol: Vec<String> = vec![];
         let mut obvi: bool = self.set_first_obvious();
@@ -80,11 +89,13 @@ impl Board {
 
     // private functions start here
 
+    /// set a field in the current sudoku-board
     fn set_field(&mut self, x: usize, y: usize, val: u8) {
         self.field[y][x] = val;
         self.set_pfeld(x, y, val);
     }
 
+    /// maintain the possible stoned for the fields in the sudoku-board
     fn set_pfeld(&mut self, x: usize, y: usize, val: u8) {
         self.possible[y][x] = vec![val];
         for i in 0..self.size {
@@ -105,6 +116,7 @@ impl Board {
         }
     }
 
+    /// is the current state valid ?
     fn is_valid(&self) -> bool {
         for y in 0..self.size {
             for x in 0..self.size {
@@ -116,6 +128,7 @@ impl Board {
         true
     }
 
+    /// return the current state as a String
     fn print(&self) -> String {
         let abc: Vec<char> = ABC.chars().collect();
         let mut res: String = String::new();
@@ -127,6 +140,7 @@ impl Board {
         res
     }
 
+    /// Set the first obvious stone
     fn set_first_obvious(&mut self) -> bool {
         for y in 0..self.size {
             for x in 0..self.size {
@@ -139,6 +153,7 @@ impl Board {
         false
     }
 
+    /// return the coordinates of the unknown field with the least possible options
     fn list_best_guess(&self) -> (usize, usize) {
         let mut minp: usize = self.size + 1;
         let mut bg_x: usize = self.size;
@@ -157,6 +172,7 @@ impl Board {
     }
 }
 
+/// return the coordinates of the carree, for a givven field (excluding the field itself)
 fn get_caree(qsize: usize, x: usize, y: usize) -> (Vec<usize>, Vec<usize>) {
     let mut x_caree: Vec<usize> = Vec::new();
     let mut y_caree: Vec<usize> = Vec::new();
@@ -193,12 +209,11 @@ mod tests {
     fn test_4x4() {
         let mut test_board = Board::new(2, "1234341.........");
         let solu = test_board.solve(5); // only 4 solutions exist
-        assert_eq!(
+        assert_eq!( solu,
             vec![String::from("1234341221434321"),
             String::from("1234341223414123"),
             String::from("1234341241232341"),
-            String::from("1234341243212143")],
-            solu
+            String::from("1234341243212143")]
         );
     }
 
@@ -206,19 +221,16 @@ mod tests {
     fn test_9x9() {
         let mut test_board = Board::new(3, ".....9.7.....82.5.327....4..16.4.....5....3......9.7.....6....58.2........42....8");
         let solu = test_board.solve(1);
-        assert_eq!(
+        assert_eq!(solu,
             vec![String::from(
                 "685439271491782653327561849916347582758126394243895716139678425862954137574213968"
-            )],
-            solu
-        );
+            )]);
     }
 
     #[test]
     fn multiple_solutions() {
-        let cnt: usize = 10;
         let mut test_board = Board::new(3, "...............................................................8.2........42....8");
-        let solu = test_board.solve(cnt);
-        assert_eq!(cnt, solu.len());
+        let solu = test_board.solve(10);
+        assert_eq!(solu.len(), 10);
     }
 }
