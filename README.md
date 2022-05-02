@@ -1,9 +1,9 @@
-# yass
+# yasgs
 
 ---
 ## About
 
-yet another sudoku solver
+yet another sudoku game solver
 
 this lib will solve sudokus, but it will not only work on "standard" 9x9 sudokus,\
 but also on a 4x4, 16x16, 25x25, 36x36 and 49x49 sudoku.
@@ -21,13 +21,13 @@ the results will re-use the format of the input ( e.g.: borders, newlines, space
 use this "alphabete" to specify the state of the cells (you can use '0' instead of '.', as well):\
 .123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ
 
-add yass into the Cargo.toml of your project
+add yasgs into the Cargo.toml of your project
 
 
 ```
 fn main() {
     println!("Solutions found:");
-    for solution in yass::solve("34.. 12.. ...3 ....", 5) {
+    for solution in yasgs::solve("34.. 12.. ...3 ....", 5) {
         // there are only 3 solutions
         println!("  {}", solution);    
     }
@@ -45,7 +45,7 @@ fn main() {
     3 . .  . . .  . . 2
    ";
    println!("\nSudoku:\n  {}", &sudoku);
-   for solution in yass::solve(&sudoku, 1) {
+   for solution in yasgs::solve(&sudoku, 1) {
     println!("Solution:\n  {}", solution);    
     }
 
@@ -69,7 +69,7 @@ fn main() {
   ║ . │ . │ . ║ 2 │ 7 │ 4 ║ . │ . │ . ║
   ╚═══════════╩═══════════╩═══════════╝";
    println!("\nSudoku:\n  {}", &sudoku);
-   for solution in yass::solve(&sudoku, 1) {
+   for solution in yasgs::solve(&sudoku, 1) {
     println!("Solution:\n  {}", solution);    
     }
 }

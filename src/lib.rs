@@ -1,4 +1,4 @@
-//! yass (yet another sodoku solver)
+//! yasgs (yet another sodoku game solver)
 //!
 //! this lib will solve sudokus, but it will not only work on "standard" 9x9 sudokus,\
 //! but also on a 4x4, 16x16, 25x25, 36x36 and 49x49 sudoku.

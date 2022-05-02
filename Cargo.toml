@@ -1,12 +1,12 @@
 [package]
-name = "yass"
+name = "yasgs"
 version = "0.1.0"
 edition = "2021"
 authors = ["Marty3000"]
-description = "Yet another sudoku solver"
+description = "Yet another sudoku game solver"
 license = "MIT"
-repository = "https://github.com/Marty3000/yass.git"
-documentation = "https://docs.rs/yass"
+repository = "https://github.com/Marty3000/yasgs.git"
+documentation = "https://docs.rs/yasgs"
 keywords = ["sudoku"]
 categories = ["games"]
 
