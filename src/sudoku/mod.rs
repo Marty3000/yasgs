@@ -1,11 +1,11 @@
 //! sudoku mod
-//! 
+//!
 //! defines a sudoku-board (struct)\
 //! and some methods, functions to calculate the solutions
 #![forbid(unsafe_code)]
 
 /// the alphabete used for the "stones"
-const ABC: &'static str = ".123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ";
+const ABC: &str = ".123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWYXZ";
 
 /// the sudoku board
 pub struct Board {
@@ -17,15 +17,14 @@ pub struct Board {
 
 /// methods used for solving the suduko
 impl Board {
-
     /// create a new board ( size and initial state must be provided)
     pub fn new(qsize: usize, inp: &str) -> Board {
         let size = qsize * qsize;
         let abc: Vec<char> = ABC.chars().collect();
         let mut mabc = inp.chars().rev().collect::<String>();
         let mut me = Board {
-            size: size,
-            qsize: qsize,
+            size,
+            qsize,
             field: vec![vec![0; size]; size],
             possible: vec![vec![(1..(size as u8 + 1)).collect(); size]; size],
         };
@@ -36,7 +35,7 @@ impl Board {
                 if abc.contains(&inp_char) {
                     // println!("    Found char {} => {}", inp_char, abc.iter().position(|x| *x == inp_char).unwrap());
                     me.field[y][x] = abc.iter().position(|x| *x == inp_char).unwrap() as u8
-                }                
+                }
                 if 0 < me.field[y][x] {
                     me.set_pfeld(x, y, me.field[y][x]);
                 }
@@ -189,7 +188,6 @@ fn get_caree(qsize: usize, x: usize, y: usize) -> (Vec<usize>, Vec<usize>) {
     (x_caree, y_caree)
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -209,27 +207,38 @@ mod tests {
     fn test_4x4() {
         let mut test_board = Board::new(2, "1234341.........");
         let solu = test_board.solve(5); // only 4 solutions exist
-        assert_eq!( solu,
-            vec![String::from("1234341221434321"),
-            String::from("1234341223414123"),
-            String::from("1234341241232341"),
-            String::from("1234341243212143")]
+        assert_eq!(
+            solu,
+            vec![
+                String::from("1234341221434321"),
+                String::from("1234341223414123"),
+                String::from("1234341241232341"),
+                String::from("1234341243212143")
+            ]
         );
     }
 
     #[test]
     fn test_9x9() {
-        let mut test_board = Board::new(3, ".....9.7.....82.5.327....4..16.4.....5....3......9.7.....6....58.2........42....8");
+        let mut test_board = Board::new(
+            3,
+            ".....9.7.....82.5.327....4..16.4.....5....3......9.7.....6....58.2........42....8",
+        );
         let solu = test_board.solve(1);
-        assert_eq!(solu,
+        assert_eq!(
+            solu,
             vec![String::from(
                 "685439271491782653327561849916347582758126394243895716139678425862954137574213968"
-            )]);
+            )]
+        );
     }
 
     #[test]
     fn multiple_solutions() {
-        let mut test_board = Board::new(3, "...............................................................8.2........42....8");
+        let mut test_board = Board::new(
+            3,
+            "...............................................................8.2........42....8",
+        );
         let solu = test_board.solve(10);
         assert_eq!(solu.len(), 10);
     }

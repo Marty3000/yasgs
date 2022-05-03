@@ -1,6 +1,6 @@
 [package]
 name = "yasgs"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Marty3000"]
 description = "Yet another sudoku game solver"
